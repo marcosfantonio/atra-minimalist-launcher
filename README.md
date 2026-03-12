@@ -16,6 +16,11 @@ Atra is a minimalist Android launcher built from the ground up to bridge this ga
 
 The result is a launcher that reclaims your focus without sacrificing design. It provides a striking, polished aesthetic that combines brutalist functionality with sophisticated looks. As a technical byproduct, the true-black UI significantly reduces OLED pixel illumination, extending your device's battery life.
 
+## Design System & Visual Identity
+Atra is not just a technical experiment; it is a design-driven product. As a Graphic and UX Designer, I approached this launcher with a strict focus on visual hierarchy and cognitive ergonomics. 
+
+Every monochrome nuance, the typographic scale, and especially the Atra logo are not accidental. They are the result of a comprehensive visual identity study. Before writing a single line of Kotlin, the aesthetics were carefully prototyped to ensure that true minimalism didn't mean "empty" or "cheap", but rather **intentional**. The design process was treated with the same rigor as the software architecture, ensuring that the final product is as visually striking as it is functional.
+
 ## Under the Hood (Tech Stack)
 Built with modern Android development standards to ensure a lightweight footprint and fluid performance:
 * **Android SDK (12.0+)**
