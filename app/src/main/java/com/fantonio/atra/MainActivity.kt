@@ -12,7 +12,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +30,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.BatteryFull
@@ -47,6 +50,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -134,7 +138,7 @@ fun StandardizedAppIcon(app: AppInfo, modifier: Modifier = Modifier) {
             } else {
                 Modifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(12.dp)
                     .clip(RoundedCornerShape(8.dp))
             }
         }
@@ -148,28 +152,62 @@ fun StandardizedAppIcon(app: AppInfo, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AtraAppList(apps: List<AppInfo>, context: Context, onBackToHome: () -> Unit) {
+    var searchQuery by remember{ mutableStateOf("") }
+
+    val filteredApps = remember (searchQuery, apps){
+        apps.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    }
     BackHandler {
         onBackToHome()
     }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 32.dp, vertical = 48.dp)
+            .padding(horizontal = 32.dp)
     ) {
-        item {
-            Text(
-                text = "[VOLTAR]",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 18.sp,
-                color = Color.Gray,
-                modifier = Modifier
-                    .clickable { onBackToHome() }
-                    .padding(vertical = 16.dp)
-            )
+        stickyHeader {
+            Surface(
+                color = Color.White,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column {
+                    Spacer(modifier = Modifier.height(48.dp))
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        BasicTextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            singleLine = true,
+                            textStyle = TextStyle(
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 22.sp,
+                                color = Color.Black
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp),
+                            decorationBox = { innerTextField ->
+                                if (searchQuery.isEmpty()) {
+                                    Text(
+                                        text = "Search...",
+                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 22.sp,
+                                        color = Color.LightGray
+                                    )
+                                }
+                                innerTextField()
+                            })
+                    }
+                    Spacer(modifier = Modifier.height(1.dp).fillMaxWidth().background(Color.LightGray))
+                }
+            }
         }
-        items(apps) { app ->
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        items(filteredApps) { app ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -195,6 +233,8 @@ fun AtraAppList(apps: List<AppInfo>, context: Context, onBackToHome: () -> Unit)
                 )
             }
         }
+
+        item { Spacer(modifier = Modifier.height(48.dp))}
     }
 }
 
