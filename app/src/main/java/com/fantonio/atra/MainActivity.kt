@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -48,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.text.TextStyle
@@ -215,6 +217,7 @@ fun AtraAppList(apps: List<AppInfo>, context: Context, onBackToHome: () -> Unit)
                     .clickable {
                         val launchIntent =
                             context.packageManager.getLaunchIntentForPackage(app.packageName)
+                            onBackToHome()
                         if (launchIntent != null) {
                             context.startActivity(launchIntent)
                         }
@@ -266,6 +269,13 @@ fun AtraHomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 32.dp, vertical = 48.dp)
+            .pointerInput(Unit){
+                detectVerticalDragGestures { change, dragAmount ->
+                    if (dragAmount < -20f) {
+                        onOpenDrawer()
+                    }
+                }
+            }
     ) {
         Spacer(modifier = Modifier.height(120.dp))
         Column(
