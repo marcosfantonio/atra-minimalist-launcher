@@ -2,9 +2,13 @@ package com.fantonio.atra.ui.screens
 
 import android.content.Context
 import android.os.BatteryManager
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
@@ -13,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -21,24 +24,28 @@ import androidx.compose.ui.unit.sp
 import com.fantonio.atra.AppInfo
 import com.fantonio.atra.ui.components.StandarizedAppIcon
 import com.fantonio.atra.ui.theme.Language
+import com.fantonio.atra.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     apps: List<AppInfo>,
     context: Context,
-    hiddenApps: Set<String>,
     language: Language,
+    viewModel: MainViewModel,
     onOpenDrawer: () -> Unit,
     onOpenSettings: () -> Unit
 ) {
     var currentTime by remember { mutableStateOf("")}
     var currentDate by remember {  mutableStateOf("")}
     var batteryLevel by remember { mutableStateOf(0) }
+    var slotToRemove by remember { mutableStateOf<Int?>(null) }
 
+    val homeSlots by viewModel.homeSlots.collectAsState()
     val locale = if (language == Language.PORTUGUESE) Locale.forLanguageTag("pt-BR") else Locale.ENGLISH
 
     val timePattern = if (language == Language.PORTUGUESE) "hh:mm a" else "h:mm a"
@@ -79,6 +86,8 @@ fun HomeScreen(
         }
     }
 
+    val prefs = remember { context.getSharedPreferences("atra", Context.MODE_PRIVATE) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -89,7 +98,8 @@ fun HomeScreen(
                         onOpenDrawer()
                     }
                 }
-            },
+            }
+            .clickable(enabled = slotToRemove != null) { slotToRemove = null },
     ) {
         Spacer(modifier = Modifier.height(120.dp))
         Column(
@@ -113,8 +123,7 @@ fun HomeScreen(
                 Text(
                     text = "$batteryText $batteryLevel", fontFamily = FontFamily.Monospace,
                     fontSize = 22.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                    color = MaterialTheme.colorScheme.onBackground)
 
                 Spacer(modifier = Modifier.width(4.dp))
 
@@ -130,34 +139,88 @@ fun HomeScreen(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            val visibleApps = remember(apps, hiddenApps) {
-                apps.filter { !hiddenApps.contains(it.packageName) }.take(5)
-            }
-            visibleApps.forEach { app ->
+            for (i in 0..4) {
+                val packageName = homeSlots[i]
+                val app = apps.find { it.packageName == packageName }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            val launchIntent =
-                                context.packageManager.getLaunchIntentForPackage(app.packageName)
-                            if (launchIntent != null) {
-                                context.startActivity(launchIntent)
+                        .combinedClickable(
+                            onClick = {
+                                if (app != null) {
+                                    val launchIntent =
+                                        context.packageManager.getLaunchIntentForPackage(app.packageName)
+                                    if (launchIntent != null) {
+                                        context.startActivity(launchIntent)
+                                    }
+                                } else {
+                                    viewModel.pendingSlotIndex = i
+                                    onOpenDrawer()
+                                }
+                            },
+                            onLongClick = {
+                                if (app != null) {
+                                    slotToRemove = i
+                                }
+                            }
+                        )
+                ) {
+                    Box(
+                        modifier = Modifier.size(48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (app != null) {
+                            StandarizedAppIcon(app = app)
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .border(1.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(4.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Add app",
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier.size(16.dp)
+                                )
                             }
                         }
-                        .padding(vertical = 2.dp)
-                ) {
-                    StandarizedAppIcon(app = app)
+                    }
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                    if (app != null) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(
+                            text = app.name,
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 22.sp,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(bottom = 2.dp)
+                        )
 
-                    Text(
-                        text = app.name,
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 22.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(bottom = 2.dp)
-                    )
+                        if (slotToRemove == i) {
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .border(1.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(4.dp))
+                                    .clickable {
+                                        viewModel.removeAppFromSlot(i, prefs)
+                                        slotToRemove = null
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Remove,
+                                    contentDescription = "Remove app",
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

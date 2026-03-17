@@ -1,6 +1,10 @@
 package com.fantonio.atra.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.fantonio.atra.AppInfo
 import com.fantonio.atra.data.AppRepository
@@ -11,6 +15,41 @@ import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel : ViewModel() {
     private val repository = AppRepository()
+
+    private val _homeSlots = MutableStateFlow<Map<Int, String>>(emptyMap())
+    val homeSlots: StateFlow<Map<Int, String>> = _homeSlots
+    var pendingSlotIndex by mutableIntStateOf(-1)
+
+    private val _notifications = MutableStateFlow<Set<String>>(emptySet())
+    val notifications: StateFlow<Set<String>> = _notifications
+
+    fun updateNotifications(packages: Set<String>) {
+        _notifications.value = packages
+    }
+
+    fun loadHomeSlots(prefs: SharedPreferences) {
+        val map = mutableMapOf<Int, String>()
+        for (i in 0..4) {
+            val pkg = prefs.getString("home_slot_$i", null)
+            if (pkg != null) map[i] = pkg
+        }
+        _homeSlots.value = map
+    }
+
+    fun saveAppToSlot(slotIndex: Int, packageName: String, prefs: SharedPreferences) {
+        val current = _homeSlots.value.toMutableMap()
+        current[slotIndex] = packageName
+        _homeSlots.value = current
+        prefs.edit().putString("home_slot_$slotIndex", packageName).apply()
+        pendingSlotIndex = -1
+    }
+
+    fun removeAppFromSlot(slotIndex: Int, prefs: SharedPreferences) {
+        val current = _homeSlots.value.toMutableMap()
+        current.remove(slotIndex)
+        _homeSlots.value = current
+        prefs.edit().remove("home_slot_$slotIndex").apply()
+    }
 
     private val _apps = MutableStateFlow<List<AppInfo>>(emptyList())
     val apps: StateFlow<List<AppInfo>> = _apps
@@ -24,11 +63,11 @@ class MainViewModel : ViewModel() {
     private val _language = MutableStateFlow(Language.ENGLISH)
     val language: StateFlow<Language> = _language
 
-    fun loadHiddenApps(prefs: android.content.SharedPreferences) {
+    fun loadHiddenApps(prefs: SharedPreferences) {
         _hiddenApps.value = prefs.getStringSet("hiddenApps", emptySet()) ?: emptySet()
     }
 
-    fun toggleAppVisibility(packageName: String, prefs: android.content.SharedPreferences) {
+    fun toggleAppVisibility(packageName: String, prefs: SharedPreferences) {
         val currentSet = _hiddenApps.value.toMutableSet()
 
         if (currentSet.contains(packageName)) {
@@ -49,18 +88,19 @@ class MainViewModel : ViewModel() {
         loadApps(context)
     }
 
-    fun setTheme(theme: Theme, prefs: android.content.SharedPreferences) {
+    fun setTheme(theme: Theme, prefs: SharedPreferences) {
         _theme.value = theme
         prefs.edit().putString("theme", theme.name).apply()
     }
 
-    fun setLanguage(language: Language, prefs: android.content.SharedPreferences) {
+    fun setLanguage(language: Language, prefs: SharedPreferences) {
         _language.value = language
         prefs.edit().putString("language", language.name).apply()
     }
     
-    fun loadSettings(prefs: android.content.SharedPreferences) {
+    fun loadSettings(prefs: SharedPreferences) {
         loadHiddenApps(prefs)
+        loadHomeSlots(prefs)
         
         val themeName = prefs.getString("theme", Theme.LIGHT.name) ?: Theme.LIGHT.name
         _theme.value = try { Theme.valueOf(themeName) } catch (e: Exception) { Theme.LIGHT }

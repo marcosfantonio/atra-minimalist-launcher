@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
             val currentTheme by viewModel.theme.collectAsState()
             val currentLanguage by viewModel.language.collectAsState()
             val hiddenApps by viewModel.hiddenApps.collectAsState()
-            
+
             LaunchedEffect(Unit) {
                 viewModel.loadApps(this@MainActivity)
                 viewModel.loadSettings(prefs)
@@ -57,8 +57,8 @@ class MainActivity : ComponentActivity() {
                             "HOME" -> HomeScreen(
                                 apps = myApps,
                                 context = this@MainActivity,
-                                hiddenApps = hiddenApps,
                                 language = currentLanguage,
+                                viewModel = viewModel,
                                 onOpenDrawer = { currentScreen.value = "DRAWER"},
                                 onOpenSettings = { currentScreen.value = "SETTINGS"}
                             )
@@ -67,6 +67,8 @@ class MainActivity : ComponentActivity() {
                                 context = this@MainActivity,
                                 hiddenApps = hiddenApps,
                                 language = currentLanguage,
+                                viewModel = viewModel,
+                                prefs = prefs,
                                 onBackToHome = { currentScreen.value = "HOME"}
                             )
                             "SETTINGS" -> SettingsScreen(

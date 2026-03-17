@@ -2,6 +2,7 @@ package com.fantonio.atra.ui.screens
 
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.fantonio.atra.AppInfo
 import com.fantonio.atra.ui.components.StandarizedAppIcon
 import com.fantonio.atra.ui.theme.Language
+import com.fantonio.atra.viewmodel.MainViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -31,6 +33,8 @@ fun AppListScreen(
     context: Context,
     hiddenApps: Set<String>,
     language: Language,
+    viewModel: MainViewModel,
+    prefs: SharedPreferences,
     onBackToHome: () -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
@@ -42,6 +46,7 @@ fun AppListScreen(
         }
     }
     BackHandler {
+        viewModel.pendingSlotIndex = -1
         onBackToHome()
     }
     LazyColumn(
@@ -102,11 +107,16 @@ fun AppListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onBackToHome()
-                        val launchIntent =
-                            context.packageManager.getLaunchIntentForPackage(app.packageName)
-                        if (launchIntent != null) {
-                            context.startActivity(launchIntent)
+                        if (viewModel.pendingSlotIndex != -1) {
+                            viewModel.saveAppToSlot(viewModel.pendingSlotIndex, app.packageName, prefs)
+                            onBackToHome()
+                        } else {
+                            onBackToHome()
+                            val launchIntent =
+                                context.packageManager.getLaunchIntentForPackage(app.packageName)
+                            if (launchIntent != null) {
+                                context.startActivity(launchIntent)
+                            }
                         }
                     }
                     .padding(vertical = 2.dp)
