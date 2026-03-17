@@ -20,13 +20,6 @@ class MainViewModel : ViewModel() {
     val homeSlots: StateFlow<Map<Int, String>> = _homeSlots
     var pendingSlotIndex by mutableIntStateOf(-1)
 
-    private val _notifications = MutableStateFlow<Set<String>>(emptySet())
-    val notifications: StateFlow<Set<String>> = _notifications
-
-    fun updateNotifications(packages: Set<String>) {
-        _notifications.value = packages
-    }
-
     fun loadHomeSlots(prefs: SharedPreferences) {
         val map = mutableMapOf<Int, String>()
         for (i in 0..4) {

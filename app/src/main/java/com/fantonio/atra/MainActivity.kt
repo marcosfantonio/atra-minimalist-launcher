@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.core.view.WindowCompat
 import com.fantonio.atra.ui.components.AppListManager
 import com.fantonio.atra.ui.screens.AppListScreen
 import com.fantonio.atra.ui.screens.HomeScreen
@@ -36,6 +37,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        WindowCompat.getInsetsController(window, window.decorView)?.apply {
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
+        }
+        
         val prefs = getSharedPreferences("atra", MODE_PRIVATE)
 
         setContent {
@@ -46,6 +53,16 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 viewModel.loadApps(this@MainActivity)
                 viewModel.loadSettings(prefs)
+            }
+            
+            // Update status/navigation bar appearance based on theme
+            LaunchedEffect(currentTheme) {
+                WindowCompat.getInsetsController(window, window.decorView)?.apply {
+                    // Light theme: dark icons (true), Dark theme: white icons (false)
+                    val isDarkTheme = currentTheme == Theme.DARK
+                    isAppearanceLightStatusBars = !isDarkTheme
+                    isAppearanceLightNavigationBars = !isDarkTheme
+                }
             }
 
             AppListManager(viewModel) { myApps ->
@@ -69,6 +86,7 @@ class MainActivity : ComponentActivity() {
                                 language = currentLanguage,
                                 viewModel = viewModel,
                                 prefs = prefs,
+                                notifications = emptySet(),
                                 onBackToHome = { currentScreen.value = "HOME"}
                             )
                             "SETTINGS" -> SettingsScreen(

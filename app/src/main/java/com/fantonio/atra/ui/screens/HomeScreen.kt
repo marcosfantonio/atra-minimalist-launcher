@@ -8,7 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
@@ -177,7 +177,7 @@ fun HomeScreen(
                             Box(
                                 modifier = Modifier
                                     .size(32.dp)
-                                    .border(1.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(4.dp)),
+                                    .border(1.dp, MaterialTheme.colorScheme.onBackground, CircleShape),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
@@ -205,7 +205,7 @@ fun HomeScreen(
                             Box(
                                 modifier = Modifier
                                     .size(32.dp)
-                                    .border(1.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(4.dp))
+                                    .border(1.dp, MaterialTheme.colorScheme.onBackground, CircleShape)
                                     .clickable {
                                         viewModel.removeAppFromSlot(i, prefs)
                                         slotToRemove = null
