@@ -19,7 +19,7 @@ fun SettingsComponents(label: String, content: @Composable () -> Unit ) {
         Text(
             text = label,
             fontFamily = FontFamily.Monospace,
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             color = MaterialTheme.colorScheme.outline,
             modifier = Modifier.padding(bottom = 8.dp)
         )

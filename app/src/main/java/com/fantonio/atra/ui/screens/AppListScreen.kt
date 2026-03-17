@@ -1,7 +1,6 @@
 package com.fantonio.atra.ui.screens
 
 
-import android.R
 import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,13 +22,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fantonio.atra.AppInfo
 import com.fantonio.atra.ui.components.StandarizedAppIcon
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AppListScreen (apps: List<AppInfo>, context: Context, onBackToHome: () -> Unit){
+fun AppListScreen(
+    apps: List<AppInfo>,
+    context: Context,
+    hiddenApps: Set<String>,
+    onBackToHome: () -> Unit
+) {
     var searchQuery by remember { mutableStateOf("") }
 
-    val filteredApps = remember(searchQuery, apps) {
-        apps.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    val filteredApps = remember(searchQuery, apps, hiddenApps) {
+        apps.filter {
+            it.name.contains(searchQuery, ignoreCase = true) &&
+                    !hiddenApps.contains(it.packageName)
+        }
     }
     BackHandler {
         onBackToHome()
@@ -71,8 +79,14 @@ fun AppListScreen (apps: List<AppInfo>, context: Context, onBackToHome: () -> Un
                                 innerTextField()
                             })
                     }
-                    Spacer(modifier = Modifier.height(1.dp).fillMaxWidth().background(
-                        MaterialTheme.colorScheme.outline))
+                    Spacer(
+                        modifier = Modifier
+                            .height(1.dp)
+                            .fillMaxWidth()
+                            .background(
+                                MaterialTheme.colorScheme.outline
+                            )
+                    )
                 }
             }
         }
@@ -82,11 +96,13 @@ fun AppListScreen (apps: List<AppInfo>, context: Context, onBackToHome: () -> Un
         items(filteredApps) { app ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
                         onBackToHome()
-                        val launchIntent = context.packageManager.getLaunchIntentForPackage(app.packageName)
+                        val launchIntent =
+                            context.packageManager.getLaunchIntentForPackage(app.packageName)
                         if (launchIntent != null) {
                             context.startActivity(launchIntent)
                         }

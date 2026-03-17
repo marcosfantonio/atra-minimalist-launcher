@@ -29,12 +29,17 @@ import java.util.Locale
 fun HomeScreen(
     apps: List<AppInfo>,
     context: Context,
+    hiddenApps: Set<String>,
     onOpenDrawer: () -> Unit,
     onOpenSettings: () -> Unit
 ) {
     var currentTime by remember { mutableStateOf("")}
     var currentDate by remember {  mutableStateOf("")}
     var batteryLevel by remember { mutableStateOf(0) }
+
+    val visibleApps = remember(apps, hiddenApps) {
+        apps.filter { !hiddenApps.contains(it.packageName) }
+    }
 
     LaunchedEffect(Unit) {
         while(true) {
@@ -58,7 +63,7 @@ fun HomeScreen(
             .padding(horizontal = 32.dp, vertical = 48.dp)
             .pointerInput(Unit) {
                 detectVerticalDragGestures { _, dragAmount ->
-                    if (dragAmount > -20f) {
+                    if (dragAmount < -20f) {
                         onOpenDrawer()
                     }
                 }
@@ -103,7 +108,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            apps.forEach { app ->
+            visibleApps.forEach { app ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier

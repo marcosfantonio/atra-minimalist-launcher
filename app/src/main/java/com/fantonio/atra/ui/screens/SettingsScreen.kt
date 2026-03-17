@@ -2,14 +2,23 @@ package com.fantonio.atra.ui.screens
 
 import android.content.SharedPreferences
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fantonio.atra.AppInfo
 import com.fantonio.atra.ui.components.SettingsOptions
 import com.fantonio.atra.ui.components.SettingsComponents
 import com.fantonio.atra.ui.theme.Theme
@@ -19,9 +28,12 @@ fun SettingsScreen(
     onBack: () -> Unit,
     currentTheme: Theme,
     onThemeChange: (Theme) -> Unit,
-    prefs: SharedPreferences
+    prefs: SharedPreferences,
+    allApps: List<AppInfo>,
+    hiddenApps: Set<String>,
+    onToggleHide: (String) -> Unit
 ) {
-    var selectedLocale by remember { mutableStateOf("ENGLISH") }
+    var isHideAppsExpanded by remember { mutableStateOf(false)}
 
     BackHandler { onBack() }
 
@@ -36,30 +48,72 @@ fun SettingsScreen(
             text = "SETTINGS",
             fontFamily = FontFamily.Monospace,
             fontSize = 32.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(bottom = 40.dp)
+            color = MaterialTheme.colorScheme.onBackground
         )
 
-        SettingsComponents(label = "THEME") {
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                SettingsOptions("LIGHT", currentTheme == Theme.LIGHT) {
-                    onThemeChange(Theme.LIGHT)
-                }
-                SettingsOptions("DARK", currentTheme == Theme.DARK) {
-                    onThemeChange(Theme.DARK)
+        Spacer(modifier = Modifier.height(48.dp))
+
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            item {
+                SettingsComponents(label = "THEME") {
+                    Column {
+                        Theme.entries.forEach { theme ->
+                            SettingsOptions(
+                                text = theme.name,
+                                isSelected = currentTheme == theme,
+                                onClick = { onThemeChange(theme) }
+                            )
+                        }
+                    }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(32.dp))
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+                SettingsComponents(label = "APPS") {
+                    SettingsOptions(
+                        text = "HIDE APPS",
+                        isSelected = isHideAppsExpanded,
+                        onClick = { isHideAppsExpanded = !isHideAppsExpanded }
+                    )
 
-        SettingsComponents(label = "LOCALE") {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                SettingsOptions("ENGLISH", selectedLocale == "ENGLISH") { 
-                    selectedLocale = "ENGLISH" 
-                }
-                SettingsOptions("BRAZILIAN PORTUGUESE", selectedLocale == "BRAZILIAN PORTUGUESE") { 
-                    selectedLocale = "BRAZILIAN PORTUGUESE" 
+                    AnimatedVisibility(visible = isHideAppsExpanded) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 8.dp)
+                        ) {
+                            allApps.sortedBy { it.name }.forEach { app ->
+                                val isHidden = hiddenApps.contains(app.packageName)
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = app.name.uppercase(),
+                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = 18.sp,
+                                        color = if (isHidden) MaterialTheme.colorScheme.outline else
+                                            MaterialTheme.colorScheme.onBackground
+                                    )
+                                    Icon(
+                                        imageVector = if (isHidden) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                            .clickable { onToggleHide(app.packageName) },
+                                        tint = if (isHidden) MaterialTheme.colorScheme.outline else
+                                            MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

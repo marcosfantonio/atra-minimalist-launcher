@@ -40,8 +40,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val currentTheme by viewModel.theme.collectAsState()
+            val hiddenApps by viewModel.hiddenApps.collectAsState()
+            
             LaunchedEffect(Unit) {
                 viewModel.loadApps(this@MainActivity)
+                viewModel.loadHiddenApps(prefs)
                 viewModel.setTheme(
                     try {
                         Theme.valueOf(prefs.getString("theme", Theme.LIGHT.name)!!)
@@ -62,19 +65,24 @@ class MainActivity : ComponentActivity() {
                             "HOME" -> HomeScreen(
                                 apps = homeApps,
                                 context = this@MainActivity,
+                                hiddenApps = hiddenApps,
                                 onOpenDrawer = { currentScreen.value = "DRAWER"},
                                 onOpenSettings = { currentScreen.value = "SETTINGS"}
                             )
                             "DRAWER" -> AppListScreen(
                                 apps = myApps,
                                 context = this@MainActivity,
+                                hiddenApps = hiddenApps,
                                 onBackToHome = { currentScreen.value = "HOME"}
                             )
                             "SETTINGS" -> SettingsScreen(
                                 onBack = { currentScreen.value = "HOME"},
                                 currentTheme = currentTheme,
                                 onThemeChange = { viewModel.setTheme(it, prefs) },
-                                prefs = prefs
+                                prefs = prefs,
+                                allApps = myApps,
+                                hiddenApps = hiddenApps,
+                                onToggleHide = { viewModel.toggleAppVisibility(it, prefs) }
                             )
                         }
                     }
