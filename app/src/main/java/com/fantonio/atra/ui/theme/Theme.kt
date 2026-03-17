@@ -16,32 +16,39 @@ enum class Theme {
     LIGHT, DARK
 }
 
+enum class Language {
+    ENGLISH, PORTUGUESE
+}
+
 private val DarkColorScheme = darkColorScheme(
     background = Color.Black,
     onBackground = Color.White,
     surface = Color.Black,
     onSurface = Color.White,
     outline = Color.DarkGray,
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Color.White,
+    secondary = Color.White,
+    tertiary = Color.Black
 )
 
+private val EinkBackground = Color(0xFFF5F5F5)
+private val EinkText = Color(0xFF1A1A1A)
+
 private val LightColorScheme = lightColorScheme(
-    background = Color.White,
-    onBackground = Color.Black,
-    surface = Color.White,
-    onSurface = Color.Black,
-    outline = Color.LightGray,
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    background = EinkBackground,
+    onBackground = EinkText,
+    surface = EinkBackground,
+    onSurface = EinkText,
+    outline = Color.Gray,
+    primary = EinkText,
+    secondary = Color(0xFF444444),
+    tertiary = Color(0xFF666666)
 )
 
 @Composable
 fun AtraTheme(
     theme: Theme = if (isSystemInDarkTheme()) Theme.DARK else Theme.LIGHT,
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = getColorScheme(theme, dynamicColor)

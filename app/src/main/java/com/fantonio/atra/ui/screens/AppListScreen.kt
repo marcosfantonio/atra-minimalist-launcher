@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fantonio.atra.AppInfo
 import com.fantonio.atra.ui.components.StandarizedAppIcon
+import com.fantonio.atra.ui.theme.Language
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -29,6 +30,7 @@ fun AppListScreen(
     apps: List<AppInfo>,
     context: Context,
     hiddenApps: Set<String>,
+    language: Language,
     onBackToHome: () -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
@@ -70,7 +72,7 @@ fun AppListScreen(
                             decorationBox = { innerTextField ->
                                 if (searchQuery.isEmpty()) {
                                     Text(
-                                        text = "Search...",
+                                        text = if (language == Language.PORTUGUESE) "Procurar..." else "Search...",
                                         fontFamily = FontFamily.Monospace,
                                         fontSize = 22.sp,
                                         color = MaterialTheme.colorScheme.outline

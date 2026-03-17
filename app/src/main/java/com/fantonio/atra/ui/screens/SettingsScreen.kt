@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.fantonio.atra.AppInfo
 import com.fantonio.atra.ui.components.SettingsOptions
 import com.fantonio.atra.ui.components.SettingsComponents
+import com.fantonio.atra.ui.theme.Language
 import com.fantonio.atra.ui.theme.Theme
 
 @Composable
@@ -29,6 +30,8 @@ fun SettingsScreen(
     currentTheme: Theme,
     onThemeChange: (Theme) -> Unit,
     prefs: SharedPreferences,
+    currentLanguage: Language,
+    onLanguageChange: (Language) -> Unit,
     allApps: List<AppInfo>,
     hiddenApps: Set<String>,
     onToggleHide: (String) -> Unit
@@ -36,6 +39,8 @@ fun SettingsScreen(
     var isHideAppsExpanded by remember { mutableStateOf(false)}
 
     BackHandler { onBack() }
+
+    val isPt = currentLanguage == Language.PORTUGUESE
 
     Column(
         modifier = Modifier
@@ -45,7 +50,7 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.height(40.dp))
 
         Text(
-            text = "SETTINGS",
+            text = if (isPt) "CONFIGURAÇÕES" else "SETTINGS",
             fontFamily = FontFamily.Monospace,
             fontSize = 32.sp,
             color = MaterialTheme.colorScheme.onBackground
@@ -57,11 +62,11 @@ fun SettingsScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             item {
-                SettingsComponents(label = "THEME") {
+                SettingsComponents(label = if (isPt) "TEMA" else "THEME") {
                     Column {
                         Theme.entries.forEach { theme ->
                             SettingsOptions(
-                                text = theme.name,
+                                text = if (theme == Theme.LIGHT) "E-INK" else "OLED",
                                 isSelected = currentTheme == theme,
                                 onClick = { onThemeChange(theme) }
                             )
@@ -69,12 +74,28 @@ fun SettingsScreen(
                     }
                 }
             }
-
             item {
                 Spacer(modifier = Modifier.height(24.dp))
-                SettingsComponents(label = "APPS") {
+                SettingsComponents(label = if (isPt) "IDIOMA" else "LANGUAGE") {
+                    Column {
+                        SettingsOptions(
+                            text = "ENGLISH",
+                            isSelected = currentLanguage == Language.ENGLISH,
+                            onClick = { onLanguageChange(Language.ENGLISH) }
+                        )
+                        SettingsOptions(
+                            text = "PORTUGUESE",
+                            isSelected = currentLanguage == Language.PORTUGUESE,
+                            onClick = { onLanguageChange(Language.PORTUGUESE) }
+                        )
+                    }
+                }
+            }
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+                SettingsComponents(label = if (isPt) "APPS" else "APPS") {
                     SettingsOptions(
-                        text = "HIDE APPS",
+                        text = if (isPt) "ESCONDER APPS" else "HIDE APPS",
                         isSelected = isHideAppsExpanded,
                         onClick = { isHideAppsExpanded = !isHideAppsExpanded }
                     )

@@ -22,8 +22,8 @@ import com.fantonio.atra.ui.screens.HomeScreen
 import com.fantonio.atra.ui.screens.SettingsScreen
 import com.fantonio.atra.ui.theme.AtraTheme
 import com.fantonio.atra.ui.theme.Theme
+import com.fantonio.atra.ui.theme.Language
 import com.fantonio.atra.viewmodel.MainViewModel
-import kotlin.collections.take
 
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<MainViewModel>()
@@ -40,32 +40,25 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val currentTheme by viewModel.theme.collectAsState()
+            val currentLanguage by viewModel.language.collectAsState()
             val hiddenApps by viewModel.hiddenApps.collectAsState()
             
             LaunchedEffect(Unit) {
                 viewModel.loadApps(this@MainActivity)
-                viewModel.loadHiddenApps(prefs)
-                viewModel.setTheme(
-                    try {
-                        Theme.valueOf(prefs.getString("theme", Theme.LIGHT.name)!!)
-                    } catch (e: IllegalArgumentException) {
-                        Theme.LIGHT
-                    },
-                    prefs
-                )
+                viewModel.loadSettings(prefs)
             }
 
             AppListManager(viewModel) { myApps ->
                 AtraTheme(theme = currentTheme) {
                     Surface(color = MaterialTheme.colorScheme.background) {
                         val currentScreen = remember { mutableStateOf("HOME") }
-                        val homeApps = myApps.take(5)
 
                         when (currentScreen.value) {
                             "HOME" -> HomeScreen(
-                                apps = homeApps,
+                                apps = myApps,
                                 context = this@MainActivity,
                                 hiddenApps = hiddenApps,
+                                language = currentLanguage,
                                 onOpenDrawer = { currentScreen.value = "DRAWER"},
                                 onOpenSettings = { currentScreen.value = "SETTINGS"}
                             )
@@ -73,12 +66,15 @@ class MainActivity : ComponentActivity() {
                                 apps = myApps,
                                 context = this@MainActivity,
                                 hiddenApps = hiddenApps,
+                                language = currentLanguage,
                                 onBackToHome = { currentScreen.value = "HOME"}
                             )
                             "SETTINGS" -> SettingsScreen(
                                 onBack = { currentScreen.value = "HOME"},
                                 currentTheme = currentTheme,
                                 onThemeChange = { viewModel.setTheme(it, prefs) },
+                                currentLanguage = currentLanguage,
+                                onLanguageChange = { viewModel.setLanguage(it, prefs) },
                                 prefs = prefs,
                                 allApps = myApps,
                                 hiddenApps = hiddenApps,

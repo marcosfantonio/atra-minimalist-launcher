@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.fantonio.atra.AppInfo
 import com.fantonio.atra.data.AppRepository
 import com.fantonio.atra.ui.theme.Theme
+import com.fantonio.atra.ui.theme.Language
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -16,6 +17,12 @@ class MainViewModel : ViewModel() {
 
     private val _hiddenApps = MutableStateFlow<Set<String>>(emptySet())
     val hiddenApps: StateFlow<Set<String>> = _hiddenApps
+
+    private val _theme = MutableStateFlow(Theme.LIGHT)
+    val theme: StateFlow<Theme> = _theme
+
+    private val _language = MutableStateFlow(Language.ENGLISH)
+    val language: StateFlow<Language> = _language
 
     fun loadHiddenApps(prefs: android.content.SharedPreferences) {
         _hiddenApps.value = prefs.getStringSet("hiddenApps", emptySet()) ?: emptySet()
@@ -34,9 +41,6 @@ class MainViewModel : ViewModel() {
         prefs.edit().putStringSet("hiddenApps", currentSet).apply()
     }
 
-    private val _theme = MutableStateFlow(Theme.LIGHT)
-    val theme: StateFlow<Theme> = _theme
-
     fun loadApps(context: Context) {
         _apps.value = repository.getInstalledApps(context)
     }
@@ -48,5 +52,20 @@ class MainViewModel : ViewModel() {
     fun setTheme(theme: Theme, prefs: android.content.SharedPreferences) {
         _theme.value = theme
         prefs.edit().putString("theme", theme.name).apply()
+    }
+
+    fun setLanguage(language: Language, prefs: android.content.SharedPreferences) {
+        _language.value = language
+        prefs.edit().putString("language", language.name).apply()
+    }
+    
+    fun loadSettings(prefs: android.content.SharedPreferences) {
+        loadHiddenApps(prefs)
+        
+        val themeName = prefs.getString("theme", Theme.LIGHT.name) ?: Theme.LIGHT.name
+        _theme.value = try { Theme.valueOf(themeName) } catch (e: Exception) { Theme.LIGHT }
+        
+        val langName = prefs.getString("language", Language.ENGLISH.name) ?: Language.ENGLISH.name
+        _language.value = try { Language.valueOf(langName) } catch (e: Exception) { Language.ENGLISH }
     }
 }
