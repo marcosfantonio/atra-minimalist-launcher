@@ -6,12 +6,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.fantonio.atra.AppInfo
 import com.fantonio.atra.data.AppRepository
 import com.fantonio.atra.ui.theme.Theme
 import com.fantonio.atra.ui.theme.Language
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainViewModel : ViewModel() {
     private val repository = AppRepository()
@@ -19,6 +23,13 @@ class MainViewModel : ViewModel() {
     private val _homeSlots = MutableStateFlow<Map<Int, String>>(emptyMap())
     val homeSlots: StateFlow<Map<Int, String>> = _homeSlots
     var pendingSlotIndex by mutableIntStateOf(-1)
+
+    private val _currentScreen = MutableStateFlow("HOME")
+    val currentScreen: StateFlow<String> = _currentScreen
+
+    fun navigateTo(screen: String) {
+        _currentScreen.value = screen
+    }
 
     fun loadHomeSlots(prefs: SharedPreferences) {
         val map = mutableMapOf<Int, String>()
@@ -74,7 +85,12 @@ class MainViewModel : ViewModel() {
     }
 
     fun loadApps(context: Context) {
-        _apps.value = repository.getInstalledApps(context)
+        viewModelScope.launch {
+            val installedApps = withContext(Dispatchers.IO) {
+                repository.getInstalledApps(context)
+            }
+            _apps.value = installedApps
+        }
     }
 
     fun refreshApps(context: Context) {

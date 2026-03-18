@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.provider.Settings
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -37,6 +35,8 @@ import com.fantonio.atra.AppInfo
 import com.fantonio.atra.ui.components.StandarizedAppIcon
 import com.fantonio.atra.ui.theme.Language
 import com.fantonio.atra.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -52,6 +52,7 @@ fun AppListScreen(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedAppPackage by remember { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
 
     val filteredApps = remember(searchQuery, apps, hiddenApps) {
         apps.filter {
@@ -199,6 +200,10 @@ fun AppListScreen(
                                     }
                                     context.startActivity(intent)
                                     selectedAppPackage = null
+                                    scope.launch {
+                                        delay(1500)
+                                        onBackToHome()
+                                    }
                                 },
                             contentAlignment = Alignment.Center
                         ) {
