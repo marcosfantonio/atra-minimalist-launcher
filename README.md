@@ -48,14 +48,14 @@ You can install the latest compiled APK directly from the [Releases Tab](#).
 
 ## Current Features
 Atra is in active development:
-**Minimal Elements and Search** The launcher gives you minimal screens to keep you focused on things that matters
-**App Hiding:** Conceal distracting applications from the main view.
-**Theme Changing:** Changes the UI to give an different experience ( currently only has E-Ink and OLED themes, more planned to be added)
-**Favorite Apps** Atra main screen come clean, so you can put your most used or favorite 5 apps on the main screen for a quick acess, now you have to think wich apps are needed instead of this being
+* **Minimal Elements and Search** The launcher gives you minimal screens to keep you focused on things that matters
+* **App Hiding:** Conceal distracting applications from the main view.
+* **Theme Changing:** Changes the UI to give an different experience ( currently only has E-Ink and OLED themes, more planned to be added)
+* **Favorite Apps** Atra main screen come clean, so you can put your most used or favorite 5 apps on the main screen for a quick acess, now you have to think wich apps are needed instead of this being
 decided by you
-**Icons System** Atra is made on a way that EVERY SINGLE app icon is thinkered to fit the aesthetics in colours
-**Non Invasive** Atra dont need permission to work, keeping your privacy
-**Low Battery and Memory Usage** Atra is lightweight, making your device consume less battery and ram compared to OEM launchers ( specially on OLED screen devices )
+* **Icons System** Atra is made on a way that EVERY SINGLE app icon is thinkered to fit the aesthetics in colours
+* **Non Invasive** Atra dont need permission to work, keeping your privacy
+* **Low Battery and Memory Usage** Atra is lightweight, making your device consume less battery and ram compared to OEM launchers ( specially on OLED screen devices )
 
 ## Contact & License
 **Developer:** [Marcos Farias "Fantonio"] – devfantonio@gmail.com
