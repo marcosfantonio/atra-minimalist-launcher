@@ -35,10 +35,9 @@ Every monochrome nuance, the typographic scale, and especially the Atra logo are
 * **OLED Optimized:** True black background for maximum battery efficiency.
 * **App Hiding:** Conceal distracting applications from the main view.
 * **Theme Changing:** Changes the UI to give an different experience ( currently only has E-Ink and OLED themes, more planned to be added)
-* **Favorite Apps** Atra main screen come clean, so you can put your most used or favorite 5 apps on the main screen for a quick acess, now you have to think wich apps are needed instead of this being
-decided by you
-* **Icons System** Atra is made on a way that EVERY SINGLE app icon is thinkered to fit the aesthetics in colours
-* **Non Invasive** Atra dont need permission to work, keeping your privacy
+* **Favorite Apps** Atra main screen come clean, so you can put your most used or favorite 5 apps on the main screen for a quick acess. Now you have to think which apps are really needed instead of this being decided for you.
+* **Icons System** Atra is made on a way that EVERY SINGLE app icon is thinkered to fit the aesthetics in colours(Try it!)
+* **Non Invasive** Atra don't need permissions to work, keeping your privacy intact.
 
 ## Installation
 You can install the latest compiled APK directly from the [Releases Tab](#).
