@@ -28,13 +28,7 @@ Atra is not just a technical experiment; it is a design-driven product. As a Gra
 
 Every monochrome nuance, the typographic scale, and especially the Atra logo are not accidental. They are the result of a comprehensive visual identity study. Before writing a single line of Kotlin, the aesthetics were carefully prototyped to ensure that true minimalism didn't mean "empty" or "cheap", but rather **intentional**. The design process was treated with the same rigor as the software architecture, ensuring that the final product is as visually striking as it is functional.
 
-## Under the Hood (Tech Stack)
-Built with modern Android development standards to ensure a lightweight footprint and fluid performance:
-* **Android SDK (12.0+)**
-* **Kotlin:** Leveraging coroutines for asynchronous app indexing.
-* **Jetpack Compose:** For a fully declarative, responsive, and state-driven UI.
-
-## Features (MVP Phase)
+## Features
 * **Monochrome Architecture:** Pure E-ink inspired interface.
 * **Cognitive Load Reduction:** No widgets, no colorful icons, zero distractions.
 * **Instant Indexing:** Blazing fast app listing and execution.
