@@ -12,15 +12,15 @@ While searching for a solution, I tested numerous minimalist launchers. However,
 The inspiration for Atra came from dedicated E-ink devices. Their interfaces are inherently simple, cohesive, and elegant. Unfortunately, porting that exact experience to a standard Android device often results in a disjointed user experience.
 
 ## Enter Atra
-<img width="540" height="1200" alt="atra1" src="https://github.com/user-attachments/assets/afc688c4-99db-4d22-87c4-d16702ae82dd" /> <img width="540" height="1200" alt="atra2" src="https://github.com/user-attachments/assets/62f7b70f-f8d9-4324-898e-2c66e55627e1" /> <img width="540" height="1200" alt="atra3" src="https://github.com/user-attachments/assets/37624c58-4d15-4b6d-8638-0dead1a136c8" />
+<img width="340" height="1000" alt="atra1" src="https://github.com/user-attachments/assets/afc688c4-99db-4d22-87c4-d16702ae82dd" /> <img width="340" height="1000" alt="atra2" src="https://github.com/user-attachments/assets/62f7b70f-f8d9-4324-898e-2c66e55627e1" /> <img width="340" height="1000" alt="atra3" src="https://github.com/user-attachments/assets/37624c58-4d15-4b6d-8638-0dead1a136c8" />
 
 Atra is a minimalist Android launcher built from the ground up to bridge this gap. It applies the high-contrast, low-information philosophy of E-ink displays directly to modern OLED screens.
 
 The result is a launcher that reclaims your focus without sacrificing design. It provides a striking, polished aesthetic that combines brutalist functionality with sophisticated looks. As a technical byproduct, the true-black UI significantly reduces OLED pixel illumination, extending your device's battery life.
 
 ## Design System & Visual Identity
-<img width="540" height="1200" alt="atra4" src="https://github.com/user-attachments/asset<img width="540" height="1200" alt="atra6" src="https://github.com/user-attachments/assets/58115d90-43b0-4176-a759-614628a6e758" />
-s/c8c5560a-1b9d-45cd-8427-280672f6c474" /><img width="540" height="1200" alt="atra5" src="https://github.com/user-attachments/assets/c62002d7-ae53-4ca7-9bc3-263dacfe4b1a" />
+<img width="340" height="1000" alt="atra4" src="https://github.com/user-attachments/asset<img width="340" height="1000" alt="atra6" src="https://github.com/user-attachments/assets/58115d90-43b0-4176-a759-614628a6e758" />
+s/c8c5560a-1b9d-45cd-8427-280672f6c474" /><img width="340" height="1000" alt="atra5" src="https://github.com/user-attachments/assets/c62002d7-ae53-4ca7-9bc3-263dacfe4b1a" />
 
 
 Atra is not just a technical experiment; it is a design-driven product. As a Graphic and UX Designer, I approached this launcher with a strict focus on visual hierarchy and cognitive ergonomics. 
