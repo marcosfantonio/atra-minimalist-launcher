@@ -21,7 +21,7 @@ The result is a launcher that reclaims your focus without sacrificing design. It
 ## Design System & Visual Identity
 <img width="240" height="900" alt="atra4" src="https://github.com/user-attachments/assets/7c158371-ac56-415c-a484-1bbedfb91eb7" />
 <img width="240" height="9000" alt="atra6" src="https://github.com/user-attachments/assets/58115d90-43b0-4176-a759-614628a6e758" />
-s/c8c5560a-1b9d-45cd-8427-280672f6c474" /><img width="240" height="900" alt="atra5" src="https://github.com/user-attachments/assets/c62002d7-ae53-4ca7-9bc3-263dacfe4b1a" />
+<img width="240" height="900" alt="atra5" src="https://github.com/user-attachments/assets/c62002d7-ae53-4ca7-9bc3-263dacfe4b1a" />
 
 
 Atra is not just a technical experiment; it is a design-driven product. As a Graphic and UX Designer, I approached this launcher with a strict focus on visual hierarchy and cognitive ergonomics. 
