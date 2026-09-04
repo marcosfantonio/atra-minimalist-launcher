@@ -12,7 +12,7 @@ While searching for a solution, I tested numerous minimalist launchers. However,
 The inspiration for Atra came from dedicated E-ink devices. Their interfaces are inherently simple, cohesive, and elegant. Unfortunately, porting that exact experience to a standard Android device often results in a disjointed user experience.
 
 ## Enter Atra
-<img width="240" height="900" alt="atra1" src="https://github.com/user-attachments/assets/afc688c4-99db-4d22-87c4-d16702ae82dd" /> <img width="240" height="900" alt="atra2" src="https://github.com/user-attachments/assets/62f7b70f-f8d9-4324-898e-2c66e55627e1" /> <img width="240" height="900" alt="atra3" src="https://github.com/user-attachments/assets/37624c58-4d15-4b6d-8638-0dead1a136c8" />
+<img width="240" height="427" alt="atra1" src="https://github.com/user-attachments/assets/afc688c4-99db-4d22-87c4-d16702ae82dd" /> <img width="240" height="427" alt="atra2" src="https://github.com/user-attachments/assets/62f7b70f-f8d9-4324-898e-2c66e55627e1" /> <img width="240" height="427" alt="atra3" src="https://github.com/user-attachments/assets/37624c58-4d15-4b6d-8638-0dead1a136c8" />
 
 Atra is a minimalist Android launcher built from the ground up to bridge this gap. It applies the high-contrast, low-information philosophy of E-ink displays directly to modern OLED screens.
 
